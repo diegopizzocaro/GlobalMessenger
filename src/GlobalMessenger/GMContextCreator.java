@@ -48,17 +48,14 @@ public class GMContextCreator implements ContextBuilder {
         GlobalMessenger theGlobalMessenger = new GlobalMessenger();
         context.add(theGlobalMessenger);
         theGlobalMessenger.initialize();
-        System.out.println("init Global Messenger");
-        //TODO move GlobalMessenger to corner (these commands cause errors because the context is not yet created!)
-        //ContinuousSpace mySpace = (ContinuousSpace)FindProjection("SensorNetworkSimPureJava/ContinuousSpace2D"); 
-        //mySpace.moveTo(theGlobalMessenger, 1.0, 1.0);
+        System.out.println("init Global Messenger, adentID = "+theGlobalMessenger.agentID+", agentIDcounter = "+GlobalMessenger.agentIDCounter);
 
         for (int i = 1; i <= numNodes; i++) {
 
             Node aNode = new Node();
             context.add(aNode);
             aNode.initialize(theGlobalMessenger);
-            System.out.println("Creating nodes");
+            System.out.println("Creating node, adentID = "+aNode.agentID+", agentIDcounter = "+Node.agentIDCounter);            
 
         }
 

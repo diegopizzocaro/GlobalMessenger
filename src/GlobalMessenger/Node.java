@@ -108,6 +108,7 @@ public class Node  {
 	 * @field agentID
 	 *
 	 */
+	protected long numericID = agentIDCounter;
 	protected String agentID = "Node " + (agentIDCounter++);
 
 

@@ -45,18 +45,24 @@ import static repast.simphony.essentials.RepastEssentials.*;
  * This is an agent.
  * 
  * @author Diego Pizzocaro
+ * 
+ * NB: you need to specify the correct numNodes in GlobalMessenger.rs/context.html
+ * otherwise the message buffer will throw an outOfBound exception.
+ * If you dont know the total number of Nodes in your simulation 
+ * then use an upper bound (hopefully "strict" upperbound).
+ * (Changing the numNodes parameter in the GUI interface will not work!) 
  *
  */
 public class GlobalMessenger  {
 
-	public ArrayList<Message> queue = new ArrayList<Message>();
+	public ArrayList<Message> queue[]; // Each element contains an ArrayList of Messages for receiver i
 	public int msgSent = 0;
 	public int msgSentBefore = 0;
 	public int msgExchanged = 0;
 
 	@Parameter (displayName = "Msg Queue", usageName = "queue")
-	public synchronized ArrayList<Message> getQueue() { return queue; }
-	public synchronized void setQueue(ArrayList<Message> newValue) { queue = newValue;  }
+	public synchronized ArrayList<Message>[] getQueue() { return queue; }
+	public synchronized void setQueue(ArrayList<Message>[] newValue) { queue = newValue;  }
 
 	@Parameter (displayName = "Msg Sent Counter", usageName = "msgSent")
 	public synchronized int getMsgSent() { return msgSent; }
@@ -106,8 +112,16 @@ public class GlobalMessenger  {
 	 *
 	 */
 	public void initialize() {
+		
+		Parameters p = RunEnvironment.getInstance().getParameters();
+		int numNodes = (Integer)p.getValue("numNodes");
 
-		setQueue(new ArrayList<Message>());
+		queue = new ArrayList[numNodes+1];
+		// Note that receiver i = 0 is not used
+		// (Ths Node class creates agentIDs starting by 1)
+		for(int i = 0; i < queue.length; i++) {
+			queue[i] = new ArrayList<Message>();			
+		}
 
 		//It's always useful to know which day/time it is
 		//(especially if you're a timetraveller!)
@@ -126,8 +140,9 @@ public class GlobalMessenger  {
 	 *
 	 */
 	public synchronized void send(Message aMsg) {
-
-		queue.add(aMsg);
+	
+		int numericReceiverID = (int)aMsg.receiver.numericID; //DANGER unsafe conversion long to int
+		queue[numericReceiverID].add(aMsg);
 		msgSent++;
 
 	}
@@ -150,21 +165,22 @@ public class GlobalMessenger  {
 	 *
 	 */
 	public synchronized ArrayList<Message> receive(Node receiverNode) {
-
-		ArrayList<Message> returnValue = new ArrayList<Message>();
-		Iterator queueIterator = queue.iterator();
-
+		
+		
+		ArrayList<Message> msgsForReceiver = new ArrayList<Message>();
+		Iterator queueIterator = queue[(int)receiverNode.numericID].iterator();//DANGER unsafe conversion long to int
+		
 		while (queueIterator.hasNext()) {
 
 			Message aMessage = (Message)queueIterator.next();
 
-			if ((aMessage.receiver.agentID).equalsIgnoreCase(receiverNode.agentID) && aMessage.timestamp < GetTickCount()) {
-				returnValue.add(aMessage);
+			if (aMessage.timestamp < GetTickCount()) {
+				msgsForReceiver.add(aMessage);
 				queueIterator.remove();
 			} 
-		}
-
-		return returnValue;
+		}		
+		
+		return msgsForReceiver;
 	}
 	
 
