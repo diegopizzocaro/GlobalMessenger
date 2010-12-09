@@ -1,0 +1,12 @@
+<context id="GlobalMessenger"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:noNamespaceSchemaLocation="http://repast.org/scenario/context"
+	class="GlobalMessenger.GMContextCreator">
+	<projection type="network" id="SensorNetwork">
+		<attribute type="boolean" value="false" id="directed" />
+	</projection>
+	<projection type="continuous space" id="ContinuousSpace2D">
+	</projection>
+	<attribute type="int" value="2" id="numNodes" />
+
+</context>
