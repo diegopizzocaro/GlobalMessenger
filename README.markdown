@@ -12,3 +12,4 @@ by [Diego Pizzocaro](http://users.cs.cf.ac.uk/D.Pizzocaro),Twitter handle:[@dieg
 
 Thanks/Acknowledgements to:
 - [Matthew J. Williams](http://users.cs.cf.ac.uk/M.J.Williams),Twitter handle:[@voxmjw](http://twitter.com/voxmjw) for discussions on how to improve the data structure used by the GlobalMessenger class.
+- The GlobalMessenger implementation was inspired by the following paper [WISDOM: Simulation Framework for Middleware Services in Wireless Sensor Networks](http://dx.doi.org/10.1109/ccnc08.2007.303)
